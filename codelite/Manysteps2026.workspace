@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="Manysteps2026" Database="" Version="10000">
+  <Project Name="manysteps-unb" Path="Manysteps2026.project" Active="Yes"/>
+  <Project Name="manysteps-unb-compr" Path="manysteps-unb-compr.project" Active="No"/>
+  <Project Name="manysteps-lib" Path="manysteps-lib.project" Active="No"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug">
+      <Environment/>
+      <Project Name="manysteps-unb" ConfigName="Debug"/>
+      <Project Name="manysteps-unb-compr" ConfigName="Debug"/>
+      <Project Name="manysteps-lib" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release">
+      <Environment/>
+      <Project Name="manysteps-unb" ConfigName="Release"/>
+      <Project Name="manysteps-unb-compr" ConfigName="Release"/>
+      <Project Name="manysteps-lib" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>
