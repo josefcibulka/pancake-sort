@@ -1,8 +1,8 @@
 .PHONY: clean All
 
 All:
-	@echo "----------Building project:[ manysteps-unb - Release ]----------"
-	@"$(MAKE)" -f  "manysteps-unb.mk"
+	@echo "----------Building project:[ greedo - Release ]----------"
+	@"$(MAKE)" -f  "greedo.mk"
 clean:
-	@echo "----------Cleaning project:[ manysteps-unb - Release ]----------"
-	@"$(MAKE)" -f  "manysteps-unb.mk" clean
+	@echo "----------Cleaning project:[ greedo - Release ]----------"
+	@"$(MAKE)" -f  "greedo.mk" clean

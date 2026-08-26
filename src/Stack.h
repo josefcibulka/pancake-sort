@@ -33,7 +33,7 @@ public:
 
   // Add a new largest element to the end of the stack.
   Stack extend() const;
-  
+
   size_t count_adj() const;
 
   // Is there an adjacency between positions pos and pos + 1?

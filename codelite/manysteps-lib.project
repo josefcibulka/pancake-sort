@@ -3,12 +3,14 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="../src/BurntStack.cpp"/>
     <File Name="../src/StackLog.cpp"/>
     <File Name="../src/Stack.cpp"/>
     <File Name="../src/MixedStack.cpp"/>
     <File Name="../src/BucketedQueue.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="../src/BurntStack.h"/>
     <File Name="../src/StackLog.h"/>
     <File Name="../src/Stack.h"/>
     <File Name="../src/MixedStack.h"/>

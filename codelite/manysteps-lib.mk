@@ -62,7 +62,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/up_src_StackLog.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_Stack.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_BucketedQueue.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_Stack.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_StackLog.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_BucketedQueue.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_BurntStack.cpp$(ObjectSuffix) 
 
 
 
@@ -95,11 +95,11 @@ PreBuild:
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/up_src_StackLog.cpp$(ObjectSuffix): ../src/StackLog.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_StackLog.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_StackLog.cpp$(DependSuffix) -MM ../src/StackLog.cpp
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/pepa/Prgani/Pancakes/Manysteps2026/src/StackLog.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_src_StackLog.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/up_src_StackLog.cpp$(PreprocessSuffix): ../src/StackLog.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_src_StackLog.cpp$(PreprocessSuffix) ../src/StackLog.cpp
+$(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix): ../src/MixedStack.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_MixedStack.cpp$(DependSuffix) -MM ../src/MixedStack.cpp
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/pepa/Prgani/Pancakes/Manysteps2026/src/MixedStack.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/up_src_MixedStack.cpp$(PreprocessSuffix): ../src/MixedStack.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_src_MixedStack.cpp$(PreprocessSuffix) ../src/MixedStack.cpp
 
 $(IntermediateDirectory)/up_src_Stack.cpp$(ObjectSuffix): ../src/Stack.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_Stack.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_Stack.cpp$(DependSuffix) -MM ../src/Stack.cpp
@@ -107,17 +107,23 @@ $(IntermediateDirectory)/up_src_Stack.cpp$(ObjectSuffix): ../src/Stack.cpp
 $(IntermediateDirectory)/up_src_Stack.cpp$(PreprocessSuffix): ../src/Stack.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_src_Stack.cpp$(PreprocessSuffix) ../src/Stack.cpp
 
+$(IntermediateDirectory)/up_src_StackLog.cpp$(ObjectSuffix): ../src/StackLog.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_StackLog.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_StackLog.cpp$(DependSuffix) -MM ../src/StackLog.cpp
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/pepa/Prgani/Pancakes/Manysteps2026/src/StackLog.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_src_StackLog.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/up_src_StackLog.cpp$(PreprocessSuffix): ../src/StackLog.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_src_StackLog.cpp$(PreprocessSuffix) ../src/StackLog.cpp
+
 $(IntermediateDirectory)/up_src_BucketedQueue.cpp$(ObjectSuffix): ../src/BucketedQueue.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_BucketedQueue.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_BucketedQueue.cpp$(DependSuffix) -MM ../src/BucketedQueue.cpp
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/pepa/Prgani/Pancakes/Manysteps2026/src/BucketedQueue.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_src_BucketedQueue.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/up_src_BucketedQueue.cpp$(PreprocessSuffix): ../src/BucketedQueue.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_src_BucketedQueue.cpp$(PreprocessSuffix) ../src/BucketedQueue.cpp
 
-$(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix): ../src/MixedStack.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_MixedStack.cpp$(DependSuffix) -MM ../src/MixedStack.cpp
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/pepa/Prgani/Pancakes/Manysteps2026/src/MixedStack.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/up_src_MixedStack.cpp$(PreprocessSuffix): ../src/MixedStack.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_src_MixedStack.cpp$(PreprocessSuffix) ../src/MixedStack.cpp
+$(IntermediateDirectory)/up_src_BurntStack.cpp$(ObjectSuffix): ../src/BurntStack.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_BurntStack.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_BurntStack.cpp$(DependSuffix) -MM ../src/BurntStack.cpp
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/pepa/Prgani/Pancakes/Manysteps2026/src/BurntStack.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_src_BurntStack.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/up_src_BurntStack.cpp$(PreprocessSuffix): ../src/BurntStack.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_src_BurntStack.cpp$(PreprocessSuffix) ../src/BurntStack.cpp
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
