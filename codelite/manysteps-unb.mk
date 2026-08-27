@@ -14,7 +14,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Josef Cibulka
-Date                   :=08/26/2026
+Date                   :=08/27/2026
 CodeLitePath           :=/home/pepa/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -52,7 +52,7 @@ LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch). $(LibraryP
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++
 CC       := /usr/bin/gcc
-CXXFLAGS :=  -O2 -W -Wall -std=gnu++20 $(Preprocessors)
+CXXFLAGS := -O2 -W -Wall -std=gnu++20 -O2 -W -Wall -std=gnu++20 $(Preprocessors)
 CFLAGS   :=   $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
@@ -62,7 +62,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/up_src_manysteps-unb.cc$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/up_src_manysteps-unb.cpp$(ObjectSuffix) 
 
 
 
@@ -93,11 +93,11 @@ PreBuild:
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/up_src_manysteps-unb.cc$(ObjectSuffix): ../src/manysteps-unb.cc
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_manysteps-unb.cc$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_manysteps-unb.cc$(DependSuffix) -MM ../src/manysteps-unb.cc
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/pepa/Prgani/Pancakes/Manysteps2026/src/manysteps-unb.cc" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_src_manysteps-unb.cc$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/up_src_manysteps-unb.cc$(PreprocessSuffix): ../src/manysteps-unb.cc
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_src_manysteps-unb.cc$(PreprocessSuffix) ../src/manysteps-unb.cc
+$(IntermediateDirectory)/up_src_manysteps-unb.cpp$(ObjectSuffix): ../src/manysteps-unb.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_manysteps-unb.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_manysteps-unb.cpp$(DependSuffix) -MM ../src/manysteps-unb.cpp
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/pepa/Prgani/Pancakes/Manysteps2026/src/manysteps-unb.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_src_manysteps-unb.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/up_src_manysteps-unb.cpp$(PreprocessSuffix): ../src/manysteps-unb.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_src_manysteps-unb.cpp$(PreprocessSuffix) ../src/manysteps-unb.cpp
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

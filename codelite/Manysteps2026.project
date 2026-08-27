@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="manysteps-unb" Version="11000" InternalType="">
   <VirtualDirectory Name="src">
-    <File Name="../src/manysteps-unb.cc"/>
+    <File Name="../src/manysteps-unb.cpp"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>

@@ -2,8 +2,8 @@
 <CodeLite_Workspace Name="Manysteps2026" Database="" Version="10000">
   <Project Name="manysteps-unb" Path="Manysteps2026.project" Active="No"/>
   <Project Name="manysteps-unb-compr" Path="manysteps-unb-compr.project" Active="No"/>
-  <Project Name="manysteps-lib" Path="manysteps-lib.project" Active="No"/>
-  <Project Name="greedo" Path="greedo.project" Active="Yes"/>
+  <Project Name="manysteps-lib" Path="manysteps-lib.project" Active="Yes"/>
+  <Project Name="greedo" Path="greedo.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug">
       <Environment/>

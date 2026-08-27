@@ -1,19 +1,6 @@
 /*
     Pancake sorting program (see kam.mff.cuni.cz/~cibulka/pancakes)
-    Copyright (C) 2009  Josef Cibulka
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    Copyright (C) 2009-2026  Josef Cibulka
 */
 
 /* See e.g. wikipedia for the definition of pancake sorting.
@@ -36,7 +23,6 @@
  */
 
 #include <assert.h>
-#include <ctype.h>
 #include <iostream>
 #include <stdarg.h>
 #include <stdio.h>
@@ -46,88 +32,24 @@
 #include <algorithm>
 #include <vector>
 
-#ifdef unix
-#include <sys/times.h>
-#include <time.h>
-#include <unistd.h>
-#else
-#include "psapi.h"
-#include "windows.h"
-#endif
-
 #include "BucketedQueue.h"
 #include "Stack.h"
+#include "StackLog.h"
 #include "constants.h"
 
 using std::vector;
 
-#define MAXOUTF 12
 #define START 10
 #define STARTUB 13 // hint for asearch
 
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
-
 int minwr, maxwr;
-FILE *outf[MAXOUTF + 1];
 long long triescnt; // statistics - number of all tried stacks
 long long gencnt;   // number of stacks of size START generated so far
-bool verb;          // be verbose
 int globn;          // size of the final stacks (first param. of the program)
 int frac;           // try only 1/frac of stacks of size START
 int modeq;          // try the modeq-th of frac parts of the stacks
-long long fact[MAX_SIZE + 2];                      // factorial
-long long visstackcnt[MAX_SIZE + 2][MAX_STEP + 2]; // data for .scnt file
-int diam[MAX_SIZE +
-         2]; // diam[i] = maximum number of flips among tried stacks of size i
-
-void my_warn(char *fmtstr, ...) {
-  va_list ap;
-  va_start(ap, fmtstr);
-  vfprintf(stderr, fmtstr, ap);
-  va_end(ap);
-}
-
-void my_err(char *fmtstr, ...) {
-  va_list ap;
-  va_start(ap, fmtstr);
-  vfprintf(stderr, fmtstr, ap);
-  va_end(ap);
-  exit(1);
-}
-
-void write_stack(FILE *outf, int vn, uint8_t *p) {
-  int i;
-  for (i = 0; i < vn; i++) {
-    fprintf(outf, "%d ", (int)p[i] + 1);
-  }
-  fprintf(outf, "\n");
-}
-
-double my_get_seconds(double *user_time, double *system_time) {
-  double ut, st;
-#ifdef unix
-  struct tms buffer;
-  times(&buffer);
-  ut = buffer.tms_utime / (double)sysconf(_SC_CLK_TCK);
-  st = buffer.tms_stime / (double)sysconf(_SC_CLK_TCK);
-#else
-  ULARGE_INTEGER nanohun;
-  FILETIME CreationTime, ExitTime, KernelTime, UserTime;
-
-  GetProcessTimes(GetCurrentProcess(), &CreationTime, &ExitTime, &KernelTime,
-                  &UserTime);
-  memcpy(&nanohun, &UserTime, sizeof(ULARGE_INTEGER));
-  ut = ((double)(nanohun.QuadPart)) / 10000000.0;
-  memcpy(&nanohun, &KernelTime, sizeof(ULARGE_INTEGER));
-  st = ((double)(nanohun.QuadPart)) / 10000000.0;
-#endif
-  if (user_time)
-    *user_time = ut;
-  if (system_time)
-    *system_time = st;
-  return ut + st;
-}
+long long fact[MAX_SIZE + 2]; // factorial
+StackLog slog;
 
 // Priority queue to store the stacks for A* search
 BucketedQueue heap;
@@ -231,8 +153,8 @@ int count_dist(Stack s, int ub) {
   return asearch(ub);
 }
 
-// depth-first search through the space of stacks, "depth" is the size -
-// starting at START and ending at globn if we know from previous calculations
+// Depth-first search through the space of stacks, "depth" is the size -
+// starting at START and ending at globn. If we know from previous calculations
 // exactly how many flips it needs, exact_val is set to this value
 void dfs_candidates(Stack s, int ub, int exact_val) {
   triescnt++;
@@ -254,15 +176,9 @@ void dfs_candidates(Stack s, int ub, int exact_val) {
   if (dst + 2 * (globn - (int)s.size()) < minwr)
     return; // the stacks of size globn created from this one would be too easy
             // to sort
-  visstackcnt[s.size()][dst]++;
-  diam[s.size()] = std::max(diam[s.size()], dst);
+  slog.log_stack(s, dst);
 
-  if ((int)s.size() == globn && dst >= minwr && dst <= maxwr) {
-    if (verb && dst == maxwr) {
-      fprintf(stderr, "FOUND ONE\t\t\t\t\t\t\n");
-      write_stack(stderr, s.size(), s._val);
-    }
-    write_stack(outf[dst - minwr], s.size(), s._val);
+  if ((int)s.size() == globn) {
     return;
   }
 
@@ -278,11 +194,6 @@ void dfs_candidates(Stack s, int ub, int exact_val) {
   }
 }
 
-void process_candidate_start(Stack s) {
-  gencnt++;
-  dfs_candidates(s, STARTUB, -1);
-}
-
 // generate all stacks of size len and send the ones from modeq'th of frac
 // parts to processing
 void gen_cand(int len) {
@@ -291,33 +202,30 @@ void gen_cand(int len) {
     svec.push_back(i);
   }
   // gccnt is the number of generated stacks modulo frac
-  for (int gccnt = 0; ; gccnt++) {
+  for (int gccnt = 0;; gccnt++) {
     if (gccnt == frac) {
-      gccnt = 0;      
+      gccnt = 0;
     }
     if (gccnt == modeq) {
-      process_candidate_start(Stack(svec));      
+      gencnt++;
+      dfs_candidates(Stack(svec), STARTUB, -1);
     }
     if (!std::next_permutation(svec.begin(), svec.end())) {
       break;
     }
-  } 
+  }
 }
 
 int main(int argc, char *argv[]) {
-  int i, j;
   int n;
-  char filename[100];
-  FILE *scfile;
-  FILE *tfile;
 
   // process parameters
   if (argc < 4) {
     std::cerr
-        << "Parameters: n minwr maxwr [frac modeq] [v]\n Program determines "
+        << "Parameters: n minwr maxwr [frac modeq]\n Program determines "
            "stacks of size n with required number of flips between minwr and "
            "maxwr incl. .\n If desired, only 1/frac of stacks are tried; modeq "
-           "tells which part among 0...frac-1\n v ... be verbose"
+           "tells which part among 0...frac-1"
         << std::endl;
     return 0;
   }
@@ -334,32 +242,17 @@ int main(int argc, char *argv[]) {
   }
   minwr = atoi(argv[2]);
   maxwr = atoi(argv[3]);
-  if (maxwr - minwr > MAXOUTF - 1) {
-    std::cerr << "Maxwr-minwr is too large (must be at most " << MAXOUTF - 1
-              << ")." << std::endl;
-    return 1;
-  }
   fact[0] = 1;
-  for (i = 1; i <= n; i++)
+  for (int i = 1; i <= n; i++)
     fact[i] = fact[i - 1] * i;
 
   frac = 1;
   modeq = 0;
   if (argc >= 5) {
-    if (tolower(argv[4][0]) == 'd' || tolower(argv[4][0]) == 'v')
-      verb = true;
-    else
-      frac = atoi(argv[4]);
+    frac = atoi(argv[4]);
   }
   if (argc >= 6) {
-    if (tolower(argv[5][0]) == 'd' || tolower(argv[5][0]) == 'v')
-      verb = true;
-    else
-      modeq = atoi(argv[5]);
-  }
-  if (argc >= 7) {
-    if (tolower(argv[6][0]) == 'd' || tolower(argv[6][0]) == 'v')
-      verb = true;
+    modeq = atoi(argv[5]);
   }
   if (frac <= 0) {
     std::cerr << "Frac needs to be a positive integer" << std::endl;
@@ -370,56 +263,16 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  // create files for resulting stacks
-  for (i = minwr; i <= maxwr; i++) {
-    if (frac == 1)
-      sprintf(filename, "%d-%d.in", n, i);
-    else
-      sprintf(filename, "%d-%d-%04dof%d.in", n, i, modeq, frac);
-    if (fopen(filename, "r")) {
-      std::cerr << "Output file " << filename << " already exists" << std::endl;
-      return 1;
-    }
-    outf[i - minwr] = fopen(filename, "w");
-    assert(outf[i - minwr]);
+  if (!slog.init(n, minwr, maxwr, frac, modeq)) {
+    return 1;
   }
 
   // run
   gen_cand(START);
 
-  for (i = minwr; i <= maxwr; i++) {
-    fclose(outf[i - minwr]);
-  }
-
   // write the statistics to files .time	and .scnt
-  if (frac == 1)
-    sprintf(filename, "%d-%d-%d.time", n, minwr, maxwr);
-  else
-    sprintf(filename, "%d-%d-%d-%04dof%d.time", n, minwr, maxwr, modeq, frac);
-  tfile = fopen(filename, "w");
-  fprintf(tfile, "manysteps %d %d %d %d %4d ", n, minwr, maxwr, frac, modeq);
-  fprintf(tfile,
-          "stacks tried: %10lld  flips done: "
-          "%16lu max heap size %12lu ",
-          triescnt, Stack::flip_cnt, BucketedQueue::maxheapsize);
-  fprintf(tfile, "%10.3f\n", my_get_seconds(NULL, NULL));
-  fclose(tfile);
-
-  if (frac == 1)
-    sprintf(filename, "%d-%d-%d.scnt", n, minwr, maxwr);
-  else
-    sprintf(filename, "%d-%d-%d-%04dof%d.scnt", n, minwr, maxwr, modeq, frac);
-  scfile = fopen(filename, "w");
-  fprintf(scfile, "manysteps %d %d %d %d %4d\n", n, minwr, maxwr, frac, modeq);
-  fprintf(scfile, "Stack counts:\n");
-  for (i = START; i <= n; i++) {
-    fprintf(scfile, "n==%02d, diam==%02d ", i, diam[i]);
-    for (j = maxwr; j >= MAX(0, minwr - 2 * (n - i)); j--)
-      if (visstackcnt[i][j] != 0)
-        fprintf(scfile, "%8lld ", visstackcnt[i][j]);
-    fprintf(scfile, "\n");
-  }
-  fclose(scfile);
+  slog.write_stats(triescnt, Stack::flip_cnt, BucketedQueue::maxheapsize);
+  slog.write_stack_counts(START);
 
   std::cerr << "Asearch stacks per FlipsProcessed:" << std::endl;
   for (int i = 0; i < 3; ++i) {
