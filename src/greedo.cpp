@@ -47,14 +47,13 @@ void write_file(int n) {
     char val = 0;
     file.write(&val, 1);
   }
+  // First write, for each unburnt stack, how many burnt variants of it are
+  // greedos.
   while (i < greedos.size()) {
     size_t ni = i + 1;
     while (ni < greedos.size() &&
            cur_ind == greedos[ni].to_unburnt().get_index()) {
       ++ni;
-    }
-    if (ni - i > 100) {
-      std::cerr << "bad" << std::endl;
     }
     char val = ni - i;
     file.write(&val, 1);
@@ -68,7 +67,7 @@ void write_file(int n) {
     i = ni;
     cur_ind = next_ind;
   }
-
+  // Then, for each greedo, write its panacakes' orientations in 2 bytes.
   for (const BurntStack &greedo : greedos) {
     uint16_t ori = greedo.ori_bitmap();
     file.write(reinterpret_cast<char *>(&ori), 2);
