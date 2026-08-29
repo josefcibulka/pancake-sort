@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 
+#include "BurntStack.h"
 #include "Stack.h"
 
 class MixedStack {
@@ -19,8 +20,7 @@ public:
     // compress();
   }
 
-  explicit MixedStack(const Stack &unburnt)
-      : _len(unburnt.size()) {
+  explicit MixedStack(const Stack &unburnt) : _len(unburnt.size()) {
     for (std::size_t i = 0; i < _len; ++i) {
       _val[i] = unburnt.val(i);
     }
@@ -38,7 +38,7 @@ public:
   bool ori(std::size_t i) const { return _ori & (1 << i); }
 
   uint8_t val(std::size_t i) const { return _val[i]; }
-  
+
   const std::vector<uint8_t> &orig() const { return _orig; }
 
   // Returns the result of a prefix flip. If an adjacency appears, compress it.
@@ -53,6 +53,9 @@ public:
   void compress();
 
   void compress_old();
+
+  // For a BurntStack decides if orientations, where present, are the same.
+  bool is_ori_compatible(const BurntStack &bs) const;
 
 private:
   std::size_t _len;

@@ -1,7 +1,6 @@
 #include "StackLog.h"
 
 #include <algorithm>
-#include <cstdio>
 #include <format>
 #include <ios>
 #include <string>
@@ -52,13 +51,19 @@ StackLog::StackLog() {}
 
 StackLog::~StackLog() {}
 
-bool StackLog::init(size_t len, size_t minwr, size_t maxwr, int frac,
-                    int modeq) {
+bool StackLog::init(size_t len, size_t minwr, size_t maxwr, uint64_t frac,
+                    uint64_t modeq) {
   _len = len;
   _minwr = minwr;
   _maxwr = maxwr;
   _frac = frac;
   _modeq = modeq;
+
+  _fact[0] = 1;
+  for (size_t i = 1; i <= _len; ++i) {
+    _fact[i] = _fact[i - 1] * i;
+  }
+
   _outf.clear();
   for (size_t i = minwr; i <= maxwr; i++) {
     string filename;
@@ -97,6 +102,20 @@ void StackLog::log_stack(const Stack &s, size_t dst) {
   }
 }
 
+void StackLog::log_starting_stack() { _gencnt++; }
+
+void StackLog::log_tried_candidate(int start) {
+  _triescnt++;
+  if (_triescnt % 100000 == 0) {
+    uint64_t all_start = _fact[start] / _frac;
+    if (all_start * _frac + _modeq <= _fact[start]) {
+      all_start++;
+    }
+    std::cerr << "stacks tried " << _triescnt << ", generated " << _gencnt
+              << " of " << all_start << " starting stacks\r";
+  }
+}
+
 void StackLog::write_stack_counts(int start) {
   string filename;
   if (_frac == 1) {
@@ -120,7 +139,7 @@ void StackLog::write_stack_counts(int start) {
   }
 }
 
-void StackLog::write_stats(int triescnt, int flip_cnt, int maxheapsize) {
+void StackLog::write_stats(int flip_cnt, int maxheapsize) {
   string filename;
   if (_frac == 1) {
     filename = format("{}-{}-{}.time", _len, _minwr, _maxwr);
@@ -134,7 +153,7 @@ void StackLog::write_stats(int triescnt, int flip_cnt, int maxheapsize) {
   double time = my_get_seconds(nullptr, nullptr);
   ofs << format("manysteps {} {} {} {} {:4} stacks tried: {:10}  flips done: "
                 "{:16} max heap size {:12} {:10.3f}",
-                _len, _minwr, _maxwr, _frac, _modeq, triescnt, flip_cnt,
+                _len, _minwr, _maxwr, _frac, _modeq, _triescnt, flip_cnt,
                 maxheapsize, time)
       << std::endl;
 }

@@ -248,3 +248,8 @@ bool MixedStack::is_adj(size_t pos) {
   }
   return false;
 }
+
+bool MixedStack::is_ori_compatible(const BurntStack& bs) const{
+  uint16_t bso = bs.ori_bitmap();
+  return (bso & _bur) == _ori;
+}

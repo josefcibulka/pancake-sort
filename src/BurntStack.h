@@ -22,12 +22,14 @@ public:
   ~BurntStack() {}
 
   // Comparison operator for std::sort.
-  bool operator< (const BurntStack &b) const;
+  bool operator<(const BurntStack &b) const;
   static bool unburnt_equals(const BurntStack &a, const BurntStack &b);
-  
+
   std::size_t size() const { return _len; }
 
   bool ori(std::size_t i) const { return _ori & (1 << i); }
+
+  uint16_t ori_bitmap() const { return _ori; }
 
   uint8_t val(std::size_t i) const { return _val[i]; }
 

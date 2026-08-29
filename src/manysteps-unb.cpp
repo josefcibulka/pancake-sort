@@ -7,29 +7,24 @@
  * See http://arxiv.org/abs/0901.3119 for more details on the algorithm
  * including references to the sources of its main ideas.
  *
- * Finds all unburnt stacks of a given size globn with required number of flips
+ * Finds all unburnt stacks of a given size finaln with required number of flips
  * from a given interval {minwr, ..., maxwr}.
  * Starts by generating the stacks of size START. From each of them, generates
- * stacks of size globn in steps. In each step, a stack is enlarged by one by
+ * stacks of size finaln in steps. In each step, a stack is enlarged by one by
  * first adding a new largest pancake to the bottom (this stack needs exactly
  * the same number of flips as the original one) and then doing two flips, first
- * of which flips the whole stack. This way all the stacks of size globn would
- * be generated. The intermediate stacks that would produce stacks of size globn
- * sortable in < minwr flips are pruned. A*search is used to determine the
- * needed number of flips for a given stack.
+ * of which flips the whole stack. This way all the stacks of size finaln would
+ * be generated. The intermediate stacks that would produce stacks of size
+ * finaln sortable in < minwr flips are pruned. A*search is used to determine
+ * the needed number of flips for a given stack.
  *
  * User can also choose to generate only 1/frac of stacks of size START.
  * Run the program without paramaters to find out how.
  */
 
-#include <assert.h>
-#include <iostream>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <algorithm>
+#include <cassert>
+#include <iostream>
 #include <vector>
 
 #include "BucketedQueue.h"
@@ -43,27 +38,27 @@ using std::vector;
 #define STARTUB 13 // hint for asearch
 
 int minwr, maxwr;
-long long triescnt; // statistics - number of all tried stacks
-long long gencnt;   // number of stacks of size START generated so far
-int globn;          // size of the final stacks (first param. of the program)
-int frac;           // try only 1/frac of stacks of size START
-int modeq;          // try the modeq-th of frac parts of the stacks
-long long fact[MAX_SIZE + 2]; // factorial
+int finaln; // size of the final stacks (first param. of the program)
+int frac;   // try only 1/frac of stacks of size START
+int modeq;  // try the modeq-th of frac parts of the stacks
 StackLog slog;
 
 // Priority queue to store the stacks for A* search
 BucketedQueue heap;
 
-uint64_t as_per_fp[3];
-
-HeapElement::FlipsProcessed next_fp_list[3]{HeapElement::FLIPS_JOINS,
-                                            HeapElement::FLIPS_NON_NEGATIVE,
-                                            HeapElement::FLIPS_NON_NEGATIVE};
-int adj_diff_want_list[3]{1, 0, -1};
+// Array indexed by the values of the FlipsProcessed enum, for which it stores
+// the next element.
+constexpr HeapElement::FlipsProcessed next_fp_list[3]{
+    HeapElement::FLIPS_JOINS, HeapElement::FLIPS_NON_NEGATIVE,
+    HeapElement::FLIPS_NON_NEGATIVE};
+// Diff in adjacencies to look for when processing a heap element with the given
+// value of FlipsProcessed. E.g. at FLIPS_NONE, we will process flips adding 1
+// adjacency, before we move to FLIPS_JOINS.
+constexpr int adj_diff_want_list[3]{1, 0, -1};
 
 //    A*SEARCH
-// asres is the length of the shortest sorting sequence found so far
-int asearch(int asres) {
+// ub is the length of the shortest sorting sequence known so far
+int asearch(int ub) {
   while (!heap.empty()) {
     HeapElement el = heap.top_pop();
     Stack s = el.s;
@@ -72,11 +67,9 @@ int asearch(int asres) {
               << " lb: " << (int)el.lb << std::endl;
 #endif
     if (el.racnt == 0) {
-      assert(el.dep < asres);
+      assert(el.dep < ub);
       return el.dep;
     }
-
-    as_per_fp[el.flips_processed]++;
 
     if (el.flips_processed == HeapElement::FLIPS_NONE) {
       if (s.val(0) > 0) {
@@ -109,15 +102,16 @@ int asearch(int asres) {
         uint8_t ndep = el.dep + 1;
         uint8_t nracnt = el.racnt - adj_diff;
         uint8_t nlow = ndep + nracnt;
-        if (nlow < asres) {
+        if (nlow < ub) {
           heap.add(HeapElement(ns, ndep, nlow, nracnt));
         }
       }
     }
     if (el.flips_processed != HeapElement::FLIPS_NON_NEGATIVE) {
+      // Put the stack back to heap, with higher FlipsProcessed.
       uint8_t nlow = el.lb + 1;
-      HeapElement::FlipsProcessed next_fp = next_fp_list[el.flips_processed];
-      if (nlow < asres) {
+      if (nlow < ub) {
+        HeapElement::FlipsProcessed next_fp = next_fp_list[el.flips_processed];
 #ifdef DEBUG_PRINT
         std::cout << "Adding to heap: " << s << " flips processed " << next_fp
                   << " dep : " << (int)el.dep << std::endl;
@@ -126,7 +120,7 @@ int asearch(int asres) {
       }
     }
   }
-  return asres;
+  return ub;
 }
 
 // start the A*search
@@ -154,31 +148,29 @@ int count_dist(Stack s, int ub) {
 }
 
 // Depth-first search through the space of stacks, "depth" is the size -
-// starting at START and ending at globn. If we know from previous calculations
-// exactly how many flips it needs, exact_val is set to this value
+// starting at START and ending at finaln. If we know from previous calculations
+// exactly how many flips it needs, exact_val is set to this value, otherwise it
+// is negative
 void dfs_candidates(Stack s, int ub, int exact_val) {
-  triescnt++;
-  if (triescnt % 100000 == 0)
-    fprintf(stderr,
-            "stacks tried %lld, generated %lld of %lld starting stacks\r",
-            triescnt, gencnt, fact[START] / frac);
+  slog.log_tried_candidate(START);
 
   int dst = exact_val;
-  if (dst < 0) {
-    int reqmin = minwr - 2 * (globn - s.size());
-    if (ub < reqmin) {
-      // no need for exact value - this stack is too easy to sort
-      dst = ub;
-    } else {
-      dst = count_dist(s, ub);
-    }
+  // If this stack is sortable with less than reqmin steps, then stacks of size
+  // finaln generated from it will be sortable with less than minwr steps making
+  // them uninteresting.
+  int reqmin = minwr - 2 * (finaln - s.size());
+  if (ub < reqmin) {
+    return;
   }
-  if (dst + 2 * (globn - (int)s.size()) < minwr)
-    return; // the stacks of size globn created from this one would be too easy
-            // to sort
+  if (dst < 0) {
+    dst = count_dist(s, ub);
+  }
+  if (dst < reqmin) {
+    return;
+  }
   slog.log_stack(s, dst);
 
-  if ((int)s.size() == globn) {
+  if ((int)s.size() == finaln) {
     return;
   }
 
@@ -207,7 +199,7 @@ void gen_cand(int len) {
       gccnt = 0;
     }
     if (gccnt == modeq) {
-      gencnt++;
+      slog.log_starting_stack();
       dfs_candidates(Stack(svec), STARTUB, -1);
     }
     if (!std::next_permutation(svec.begin(), svec.end())) {
@@ -217,8 +209,6 @@ void gen_cand(int len) {
 }
 
 int main(int argc, char *argv[]) {
-  int n;
-
   // process parameters
   if (argc < 4) {
     std::cerr
@@ -229,23 +219,19 @@ int main(int argc, char *argv[]) {
         << std::endl;
     return 0;
   }
-  globn = n = atoi(argv[1]);
-  if (n > MAX_SIZE) {
+  finaln = atoi(argv[1]);
+  if (finaln > MAX_SIZE) {
     std::cerr << "Number of pancakes is too large (must be at most " << MAX_SIZE
               << ")." << std::endl;
     return 1;
   }
-  if (n < START) {
+  if (finaln < START) {
     std::cerr << "Number of pancakes must be larger than " << START << "."
               << std::endl;
     return 1;
   }
   minwr = atoi(argv[2]);
   maxwr = atoi(argv[3]);
-  fact[0] = 1;
-  for (int i = 1; i <= n; i++)
-    fact[i] = fact[i - 1] * i;
-
   frac = 1;
   modeq = 0;
   if (argc >= 5) {
@@ -263,7 +249,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  if (!slog.init(n, minwr, maxwr, frac, modeq)) {
+  if (!slog.init(finaln, minwr, maxwr, frac, modeq)) {
     return 1;
   }
 
@@ -271,13 +257,8 @@ int main(int argc, char *argv[]) {
   gen_cand(START);
 
   // write the statistics to files .time	and .scnt
-  slog.write_stats(triescnt, Stack::flip_cnt, BucketedQueue::maxheapsize);
+  slog.write_stats(Stack::flip_cnt, BucketedQueue::maxheapsize);
   slog.write_stack_counts(START);
 
-  std::cerr << "Asearch stacks per FlipsProcessed:" << std::endl;
-  for (int i = 0; i < 3; ++i) {
-    std::cerr << as_per_fp[i] << " ";
-  }
-  std::cerr << std::endl;
   return 0;
 }

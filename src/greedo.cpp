@@ -7,14 +7,8 @@
  * of which is making a new adjacency.
  */
 
-#include <assert.h>
-#include <iostream>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <algorithm>
+#include <iostream>
 #include <vector>
 
 #include "BurntStack.h"
@@ -80,7 +74,8 @@ int main(int argc, char *argv[]) {
       std::unique(greedos.begin(), greedos.end(), BurntStack::unburnt_equals);
   greedos.erase(last, greedos.end());
 
-  std::cerr << "Greedos found: " << greedos.size() << std::endl;
+  std::cerr << "Unburnt stacks with a greedo burnt stack: " << greedos.size()
+            << std::endl;
 
   /*for (size_t i = 0; i < 20; ++i) {
     std::cerr << greedos[i] << std::endl;
