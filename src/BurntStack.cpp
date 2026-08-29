@@ -1,6 +1,7 @@
 #include "BurntStack.h"
 
 using std::size_t;
+using std::vector;
 
 bool BurntStack::operator<(const BurntStack &b) const {
   if (_len != b._len) {
@@ -56,4 +57,12 @@ bool BurntStack::is_adj(size_t pos) {
     return true;
   }
   return false;
+}
+
+Stack BurntStack::to_unburnt() const {
+  vector<uint8_t> valv;
+  for (size_t i = 0; i < size(); ++i) {
+    valv.push_back(val(i));
+  }
+  return Stack(valv);
 }

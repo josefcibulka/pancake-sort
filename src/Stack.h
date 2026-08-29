@@ -45,6 +45,9 @@ public:
   int adj_diff(size_t flip_size) const;
 
   void bottom_compress();
+  
+  // Returns index of the permutation in lexicographic ordering.
+  uint32_t get_index() const;
 
   friend std::ostream &operator<<(std::ostream &out, const Stack &stack);
 

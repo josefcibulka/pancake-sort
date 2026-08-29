@@ -1,6 +1,7 @@
 #pragma once
 
 #include "constants.h"
+#include "Stack.h"
 
 #include <cinttypes>
 #include <cstddef>
@@ -39,6 +40,8 @@ public:
   // Is there an adjacency between positions pos and pos + 1?
   // The last pancake can also form an adjacency with the bottom of the stack.
   bool is_adj(size_t pos);
+  
+  Stack to_unburnt() const;
 
   friend std::ostream &operator<<(std::ostream &out, const BurntStack &stack);
 

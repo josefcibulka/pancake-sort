@@ -1,6 +1,7 @@
 #include "Stack.h"
 
 using std::size_t;
+using std::vector;
 
 uint64_t Stack::flip_cnt = 0;
 
@@ -55,3 +56,23 @@ void Stack::bottom_compress() {
     _len--;
   }
 }
+
+uint32_t Stack::get_index() const{
+  vector<bool> used;
+  used.resize(size(), false);
+
+  int ret = 0;
+  for (size_t i = 0; i < size(); i++) {
+    int tmp = 0;
+    for (uint8_t j = 0; j < val(i); j++) {
+      if (!used[j]) {
+        tmp++;
+      }
+    }
+    ret = ret * (size() - i) + tmp;
+    used[val(i)] = true;
+  }
+
+  return ret;
+}
+
