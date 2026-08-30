@@ -14,7 +14,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Josef Cibulka
-Date                   :=08/29/2026
+Date                   :=08/30/2026
 CodeLitePath           :=/home/pepa/.codelite
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -62,7 +62,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_Stack.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_StackLog.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_BucketedQueue.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_BurntStack.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/up_src_FileFormats.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_Stack.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_StackLog.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_BucketedQueue.cpp$(ObjectSuffix) $(IntermediateDirectory)/up_src_BurntStack.cpp$(ObjectSuffix) 
 
 
 
@@ -95,6 +95,12 @@ PreBuild:
 ##
 ## Objects
 ##
+$(IntermediateDirectory)/up_src_FileFormats.cpp$(ObjectSuffix): ../src/FileFormats.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_FileFormats.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_FileFormats.cpp$(DependSuffix) -MM ../src/FileFormats.cpp
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/pepa/Prgani/Pancakes/Manysteps2026/src/FileFormats.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_src_FileFormats.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/up_src_FileFormats.cpp$(PreprocessSuffix): ../src/FileFormats.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/up_src_FileFormats.cpp$(PreprocessSuffix) ../src/FileFormats.cpp
+
 $(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix): ../src/MixedStack.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/up_src_MixedStack.cpp$(DependSuffix) -MM ../src/MixedStack.cpp
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/pepa/Prgani/Pancakes/Manysteps2026/src/MixedStack.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/up_src_MixedStack.cpp$(ObjectSuffix) $(IncludePath)

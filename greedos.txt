@@ -1,0 +1,53 @@
+Greedos found: 1
+Longest sequence: 0
+Unburnt stacks with a greedo burnt stack: 1
+
+Greedos found: 2
+Longest sequence: 2
+Unburnt stacks with a greedo burnt stack: 1
+
+Greedos found: 6
+Longest sequence: 2
+Unburnt stacks with a greedo burnt stack: 4
+
+Greedos found: 24
+Longest sequence: 2
+Unburnt stacks with a greedo burnt stack: 14
+
+Greedos found: 120
+Longest sequence: 4
+Unburnt stacks with a greedo burnt stack: 70
+
+Greedos found: 720
+Longest sequence: 4
+Unburnt stacks with a greedo burnt stack: 399
+
+Greedos found: 5040
+Longest sequence: 6
+Unburnt stacks with a greedo burnt stack: 2667
+
+Greedos found: 40320
+Longest sequence: 8
+Unburnt stacks with a greedo burnt stack: 20291
+
+Greedos found: 362880
+Longest sequence: 9
+Unburnt stacks with a greedo burnt stack: 174078
+
+Greedos found: 3628800
+Longest sequence: 12
+Unburnt stacks with a greedo burnt stack: 1661887
+
+Greedos found: 39916800
+Longest sequence: 16
+Unburnt stacks with a greedo burnt stack: 17527584
+
+Greedos found: 479001600
+Longest sequence: 20
+Unburnt stacks with a greedo burnt stack: 202368725
+
+
+real	15m57.859s
+user	9m52.710s
+sys	1m3.956s
+
