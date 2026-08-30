@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "BurntStack.h"
+#include "GreedoTools.h"
 
 // Writes sets of burnt stacks in a packed binary form. This is used for
 // greedos. With each call of write, writes a set of pancakes of increasing
@@ -17,4 +18,14 @@ public:
 
 private:
   std::ofstream _file;
+};
+
+// Reads sets of greedos from a file written by GreedosWrite.
+class GreedosRead {
+public:
+  void init(int start, int end);
+  GreedoSet read(int n);
+
+private:
+  std::ifstream _file;
 };

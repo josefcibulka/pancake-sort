@@ -21,9 +21,10 @@ public:
 
   HeapElement(
       Stack s_, uint8_t dep_, uint8_t lb_, uint8_t racnt_,
-      HeapElement::FlipsProcessed flips_processed_ = HeapElement::FLIPS_NONE)
+      HeapElement::FlipsProcessed flips_processed_ = HeapElement::FLIPS_NONE,
+      bool known_wastie_ = false)
       : s(s_), dep(dep_), lb(lb_), racnt(racnt_),
-        flips_processed(flips_processed_) {}
+        flips_processed(flips_processed_), known_wastie(known_wastie_) {}
 
   Stack s;
   uint8_t dep;   // depth ... distance (number of flips) from the initial stack
@@ -34,6 +35,7 @@ public:
   // flips_processed are joins, the lb is the number of adjacencies remaining to
   // be done plus one.
   FlipsProcessed flips_processed;
+  bool known_wastie;
 };
 
 // A 2-level queue used in the A* search.

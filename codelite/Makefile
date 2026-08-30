@@ -1,8 +1,8 @@
 .PHONY: clean All
 
 All:
-	@echo "----------Building project:[ manysteps-lib - Release ]----------"
-	@"$(MAKE)" -f  "manysteps-lib.mk"
+	@echo "----------Building project:[ manysteps-unb-gr - Release ]----------"
+	@"$(MAKE)" -f  "manysteps-unb-gr.mk"
 clean:
-	@echo "----------Cleaning project:[ manysteps-lib - Release ]----------"
-	@"$(MAKE)" -f  "manysteps-lib.mk" clean
+	@echo "----------Cleaning project:[ manysteps-unb-gr - Release ]----------"
+	@"$(MAKE)" -f  "manysteps-unb-gr.mk" clean

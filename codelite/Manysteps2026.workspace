@@ -4,6 +4,7 @@
   <Project Name="manysteps-unb-compr" Path="manysteps-unb-compr.project" Active="No"/>
   <Project Name="manysteps-lib" Path="manysteps-lib.project" Active="Yes"/>
   <Project Name="greedo" Path="greedo.project" Active="No"/>
+  <Project Name="manysteps-unb-gr" Path="manysteps-unb-gr.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug">
       <Environment/>
@@ -11,6 +12,7 @@
       <Project Name="manysteps-unb-compr" ConfigName="Debug"/>
       <Project Name="manysteps-lib" ConfigName="Debug"/>
       <Project Name="greedo" ConfigName="Debug"/>
+      <Project Name="manysteps-unb-gr" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release">
       <Environment/>
@@ -18,6 +20,7 @@
       <Project Name="manysteps-unb-compr" ConfigName="Release"/>
       <Project Name="manysteps-lib" ConfigName="Release"/>
       <Project Name="greedo" ConfigName="Release"/>
+      <Project Name="manysteps-unb-gr" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

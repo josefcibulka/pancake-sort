@@ -23,7 +23,8 @@ public:
   void log_tried_candidate(int start);
 
   void write_stack_counts(int start);
-  void write_stats(int flip_cnt, int maxheapsize);
+  void write_stats(uint64_t flip_cnt, int maxheapsize,
+                   uint64_t greedo_checks = 0);
 
 private:
   std::size_t _len;

@@ -10,7 +10,9 @@
 class Stack {
 public:
   static uint64_t flip_cnt;
-
+  
+  static uint32_t perm2index(size_t len, const uint8_t *val);
+  
   explicit Stack(const std::vector<uint8_t> &unburnt) : _len{unburnt.size()} {
     for (std::size_t i = 0; i < _len; ++i) {
       _val[i] = unburnt[i];
@@ -45,7 +47,7 @@ public:
   int adj_diff(size_t flip_size) const;
 
   void bottom_compress();
-  
+
   // Returns index of the permutation in lexicographic ordering.
   uint32_t get_index() const;
 

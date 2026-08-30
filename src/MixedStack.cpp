@@ -249,7 +249,10 @@ bool MixedStack::is_adj(size_t pos) {
   return false;
 }
 
-bool MixedStack::is_ori_compatible(const BurntStack& bs) const{
-  uint16_t bso = bs.ori_bitmap();
-  return (bso & _bur) == _ori;
+bool MixedStack::is_ori_compatible(uint16_t ori_bitmap) const{
+  return (ori_bitmap & _bur) == (_ori & _bur);
+}
+
+uint32_t MixedStack::get_index() const {
+  return Stack::perm2index(_len, _val);
 }

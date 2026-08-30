@@ -5,6 +5,8 @@ All:
 	cd codelite && "$(MAKE)" -f  "manysteps-lib.mk"
 	@echo "----------Building project:[ manysteps-unb - Release ]----------"
 	cd codelite && "$(MAKE)" -f  "manysteps-unb.mk"
+	@echo "----------Building project:[ manysteps-unb-gr - Release ]----------"
+	cd codelite && "$(MAKE)" -f  "manysteps-unb-gr.mk"
 	@echo "----------Building project:[ greedo - Release ]----------"
 	cd codelite && "$(MAKE)" -f  "greedo.mk"
 clean:
@@ -12,5 +14,7 @@ clean:
 	cd codelite && "$(MAKE)" -f  "manysteps-lib.mk" clean
 	@echo "----------Cleaning project:[ manysteps-unb - Release ]----------"
 	cd codelite && "$(MAKE)" -f  "manysteps-unb.mk" clean
+	@echo "----------Cleaning project:[ manysteps-unb-gr - Release ]----------"
+	cd codelite && "$(MAKE)" -f  "manysteps-unb-gr.mk" clean
 	@echo "----------Cleaning project:[ greedo - Release ]----------"
 	cd codelite && "$(MAKE)" -f  "greedo.mk" clean

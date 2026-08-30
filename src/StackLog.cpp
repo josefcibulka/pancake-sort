@@ -139,7 +139,7 @@ void StackLog::write_stack_counts(int start) {
   }
 }
 
-void StackLog::write_stats(int flip_cnt, int maxheapsize) {
+void StackLog::write_stats(uint64_t flip_cnt, int maxheapsize, uint64_t greedo_checks) {
   string filename;
   if (_frac == 1) {
     filename = format("{}-{}-{}.time", _len, _minwr, _maxwr);
@@ -152,8 +152,8 @@ void StackLog::write_stats(int flip_cnt, int maxheapsize) {
 
   double time = my_get_seconds(nullptr, nullptr);
   ofs << format("manysteps {} {} {} {} {:4} stacks tried: {:10}  flips done: "
-                "{:16} max heap size {:12} {:10.3f}",
+                "{:16} greedo checks {:16} max heap size {:12} time {:10.3f}",
                 _len, _minwr, _maxwr, _frac, _modeq, _triescnt, flip_cnt,
-                maxheapsize, time)
+                greedo_checks, maxheapsize, time)
       << std::endl;
 }

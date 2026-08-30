@@ -9,7 +9,7 @@ using std::vector;
 
 void GreedosWrite::init(int start, int end) {
   string filename = std::format("greedos{}-{}.bing", start, end);
-  _file.open(filename, std::ios::binary);  
+  _file.open(filename, std::ios::binary);
 }
 
 void GreedosWrite::write(const vector<BurntStack> &greedos) {
@@ -44,4 +44,39 @@ void GreedosWrite::write(const vector<BurntStack> &greedos) {
     uint16_t ori = greedo.ori_bitmap();
     _file.write(reinterpret_cast<char *>(&ori), 2);
   }
+}
+
+void GreedosRead::init(int start, int end) {
+  string filename = std::format("greedos{}-{}.bing", start, end);
+  _file.open(filename, std::ios::binary);
+}
+
+GreedoSet GreedosRead::read(int n) {
+  GreedoSet res;
+  char buffer[2];
+
+  // Size is n-factorial.
+  uint32_t size = 1;
+  for (int i = 2; i <= n; ++i) {
+    size *= i;
+  }
+
+  for (uint32_t i = 0; i < size; ++i) {
+    _file.read(buffer, 1);
+    if (!_file) {
+      std::cerr << "Failed to read from file!" << std::endl;
+      exit(1);
+    }
+    res.add_count(buffer[0]);
+  }
+
+  for (uint32_t i = 0; i < size; ++i) {
+    _file.read(buffer, 2);
+    if (!_file) {
+      std::cerr << "Failed to read from file!" << std::endl;
+      exit(1);
+    }
+    res.add_ori(reinterpret_cast<uint16_t *>(&buffer)[0]);
+  }
+  return res;
 }

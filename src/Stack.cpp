@@ -57,22 +57,27 @@ void Stack::bottom_compress() {
   }
 }
 
-uint32_t Stack::get_index() const{
+uint32_t Stack::perm2index(size_t len, const uint8_t *val) {
   vector<bool> used;
-  used.resize(size(), false);
+  used.resize(len, false);
 
   int ret = 0;
-  for (size_t i = 0; i < size(); i++) {
+  for (size_t i = 0; i < len; i++) {
     int tmp = 0;
-    for (uint8_t j = 0; j < val(i); j++) {
+    for (uint8_t j = 0; j < val[i]; j++) {
       if (!used[j]) {
         tmp++;
       }
     }
-    ret = ret * (size() - i) + tmp;
-    used[val(i)] = true;
+    ret = ret * (len - i) + tmp;
+    used[val[i]] = true;
   }
 
   return ret;
+  
+}
+
+uint32_t Stack::get_index() const{
+  return perm2index(_len, &(_val[0]));
 }
 

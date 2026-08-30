@@ -54,8 +54,10 @@ public:
 
   void compress_old();
 
+  uint32_t get_index() const;
+
   // For a BurntStack decides if orientations, where present, are the same.
-  bool is_ori_compatible(const BurntStack &bs) const;
+  bool is_ori_compatible(uint16_t ori_bitmap) const;
 
 private:
   std::size_t _len;
