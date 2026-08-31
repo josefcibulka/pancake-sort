@@ -59,6 +59,8 @@ constexpr HeapElement::FlipsProcessed next_fp_list[3]{
 // adjacency, before we move to FLIPS_JOINS.
 constexpr int adj_diff_want_list[3]{1, 0, -1};
 
+int gr_check_cnt[MAX_SIZE];
+
 //    A*SEARCH
 // ub is the length of the shortest sorting sequence known so far
 int asearch(int ub) {
@@ -76,6 +78,7 @@ int asearch(int ub) {
 
     if (el.racnt <= 12 && !el.known_wastie &&
         el.flips_processed == HeapElement::FLIPS_NONE) {
+      gr_check_cnt[el.racnt]++;
       MixedStack ms{el.s};
       ms.compress();
       if (greedos[el.racnt].check_stack(ms)) {
@@ -281,7 +284,6 @@ int main(int argc, char *argv[]) {
   for (int i = 1; i <= 12; ++i) {
     greedos.push_back(reader.read(i));
   }
-
   // run
   gen_cand(START);
 
@@ -289,6 +291,12 @@ int main(int argc, char *argv[]) {
   slog.write_stats(Stack::flip_cnt, BucketedQueue::maxheapsize,
                    GreedoSet::check_cnt);
   slog.write_stack_counts(START);
+
+  std::cerr << std::endl;
+  for (int i = 0; i <= 12; ++i) {
+    std::cerr << gr_check_cnt[i] << " ";
+  }
+  std::cerr << std::endl;
 
   return 0;
 }

@@ -58,26 +58,18 @@ void Stack::bottom_compress() {
 }
 
 uint32_t Stack::perm2index(size_t len, const uint8_t *val) {
-  vector<bool> used;
-  used.resize(len, false);
+  uint32_t unused = (1 << len) - 1;
 
   int ret = 0;
-  for (size_t i = 0; i < len; i++) {
-    int tmp = 0;
-    for (uint8_t j = 0; j < val[i]; j++) {
-      if (!used[j]) {
-        tmp++;
-      }
-    }
+  // We don't need to continue to len-1 - then tmp is always 0, because the only
+  // unused is val[i]
+  for (size_t i = 0; i < len - 1; i++) {
+    uint32_t unused_trimmed = (unused & ((1 << val[i]) - 1));
+    uint8_t tmp = std::popcount(unused_trimmed);
     ret = ret * (len - i) + tmp;
-    used[val[i]] = true;
+    unused ^= (1 << val[i]);
   }
-
   return ret;
-  
 }
 
-uint32_t Stack::get_index() const{
-  return perm2index(_len, &(_val[0]));
-}
-
+uint32_t Stack::get_index() const { return perm2index(_len, &(_val[0])); }
